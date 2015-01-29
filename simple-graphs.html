@@ -3,12 +3,71 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
+  <div class="container">
 
-  {{> hello}}
+  <h1> Welcome to Simple Graphs </h1>
+
+  <div class="row">
+    <div class="col-md-12">
+      {{> graph_by_category}}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {{> table_of_data}}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {{> generate_random_data}}
+    </div>
+  </div>
+</div>
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="graph_by_category">
+
+</template>
+
+<template name="table_of_data">
+  <table id="dataEventsTable" class="table table-condensed">
+    <thead>
+      <tr>
+        <td>Amount</td>
+        <td>Category</td>
+        <td>Action</td>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each dataEventAggregates}}
+        <tr>
+          <td>{{value}}</td>
+          <td>{{key}}</td>
+          <td><button data-category="{{key}}" type="button" class="btn btn-danger">Danger</button></td>
+        </tr>
+      {{else}}
+      <tr>
+        <td>No Events</td>
+        <td></td>
+        <td></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>
+
+<template name="generate_random_data">
+  <form id="generateDataForm">
+    <div class="form-group">
+      <label for="amountOfData">Amount:</label>
+      <input type="number" class="form-control" id="amountOfData" placeholder="Enter amount">
+    </div>
+    <div class="form-group">
+      <label for="categoryOfData">Category:</label>
+      <input type="text" class="form-control" id="categoryOfData" placeholder="Enter Category">
+    </div>
+    <button type="submit" class="btn btn-default">Generate the Data</button>
+  </form>
 </template>
