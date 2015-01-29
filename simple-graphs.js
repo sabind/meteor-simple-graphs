@@ -52,7 +52,8 @@ if (Meteor.isClient) {
 
       var inserted = DataEvents.insert({
           amount: Number(amountOfData),
-          category: categoryOfData
+          category: categoryOfData,
+          created: Time.now()
       });
 
       console.log('Inserted:', inserted);
@@ -83,6 +84,10 @@ if (Meteor.isServer) {
     remove: function(userId, document, fields, modifier){
       return true;
     }
+  });
+
+  DataEvents.before.insert(function (userId, doc) {
+    doc.createdAt = new Date();
   });
 
   Meteor.methods({
