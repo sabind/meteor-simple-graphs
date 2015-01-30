@@ -178,10 +178,6 @@ if (Meteor.isServer) {
     }
   });
 
-  DataEvents.before.insert(function (userId, doc) {
-    doc.createdAt = new Date();
-  });
-
   Meteor.methods({
   deleteAllEventsForCategory: function (category) {
     check(category, String);
