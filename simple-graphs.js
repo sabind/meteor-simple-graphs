@@ -49,10 +49,6 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.generate_random_data.helpers({
-
-  });
-
   Template.generate_random_data.events({
     'submit #generateDataForm': function (e, t) {
 
@@ -64,8 +60,7 @@ if (Meteor.isClient) {
 
       var inserted = DataEvents.insert({
           amount: Number(amountOfData),
-          category: categoryOfData,
-          created: Time.now()
+          category: categoryOfData
       });
 
       console.log('Inserted:', inserted);
@@ -79,22 +74,22 @@ if (Meteor.isClient) {
       return false;
     }
   });
-  
+
   Template.graph_by_category.rendered = function() {
     var w = 600;
     var h = 250;
-    
+
     var xScale = d3.scale.ordinal().rangeRoundBands([0, w], 0.05);
     var yScale = d3.scale.linear().range([0, h]);
-    
+
     var svg = d3.select("#chart").attr("width", w).attr("height", h);
-    
+
     var key = function(doc) {
       return doc.category;
     }
     Deps.autorun(function() {
       var allData = DataEvents.find({}).fetch();
-     
+
       var dataset = [];
       var sums = {};
 
@@ -103,21 +98,21 @@ if (Meteor.isClient) {
         aggregate += eventPoint.amount;
         sums[eventPoint.category] = aggregate;
       });
-      
+
       console.log('allData', allData);
       console.log('sums', sums);
-      
+
       dataset = keyValueArrayCustomKeyValueName(sums, 'category', 'amount');
-     
+
       console.log('dataset', dataset);
-     
+
       xScale.domain(d3.range(dataset.length));
       yScale.domain([0, d3.max(dataset, function(dataPoint) {
-          return dataPoint.amount; 
+          return dataPoint.amount;
         })]);
-      
+
       var bars = svg.selectAll("rect").data(dataset, key);
-      
+
       bars.enter()
         .append("rect")
         .attr("x", w)
@@ -126,7 +121,7 @@ if (Meteor.isClient) {
         })
         .attr("width", xScale.rangeBand())
         .attr("height", function(d) {
-          return yScale(d.amount);  
+          return yScale(d.amount);
         })
         .attr("fill", function(d) {
           return "rgb(0, 0, " + (d.amount * 10) + ")";
@@ -134,7 +129,7 @@ if (Meteor.isClient) {
         .attr("data-id", function(d) {
           return d._id;
         });
-        
+
       bars.transition()
         .duration(500)
         .attr("x", function(d, i) {
@@ -150,13 +145,13 @@ if (Meteor.isClient) {
         .attr("fill", function(d) {
           return "rgb(0, 0, " + (d.amount * 10) + ")";
         });
-        
+
       bars.exit()
         .transition()
         .duration()
         .attr("x", -xScale.rangeBand())
         .remove();
-        
+
     });
   };
 }
@@ -181,7 +176,9 @@ if (Meteor.isServer) {
   Meteor.methods({
   deleteAllEventsForCategory: function (category) {
     check(category, String);
+
     console.log('Deleting: ', category);
+
     DataEvents.remove({category: category});
   }
 });
